@@ -5,6 +5,7 @@ import {
   Get,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   UsePipes,
   ValidationPipe,
@@ -13,6 +14,8 @@ import { BoardsService } from './boards.service';
 import { Board } from './board.entity';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { CreateBoardDto } from './dto/create-board.dto';
+import { BoardStatusValidationPipe } from './pipes/board-status-validation.pipe';
+import { BoardStatus } from './board-status.enum';
 
 @Controller('boards')
 export class BoardsController {
@@ -32,5 +35,18 @@ export class BoardsController {
   @Delete('/:id')
   deleteBoard(@Param('id', ParseIntPipe) id): Promise<void> {
     return this.boardservice.deleteBoard(id);
+  }
+
+  @Patch('/:id/status')
+  updateBoardStatus(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status', BoardStatusValidationPipe) status: BoardStatus,
+  ): Promise<Board> {
+    return this.boardservice.updateBoardStatus(id, status);
+  }
+
+  @Get()
+  getAllTask(): Promise<Board[]> {
+    return this.boardservice.getAllBoards();
   }
 }
